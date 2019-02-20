@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义指令</title>
+    <script src="js/vue.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <div style = "line-height:16px">
+        <p>//自定义全局指令，也可定义私有指令，还可以指令缩写，在下面有例子</p>
+        <p>//Vue.directive("指令名称",对象)，对象有多个函数，在特定的阶段执行相应的操作</p>
+        <p> // 对象的第一个参数永远是el ,表示被指令所指定的DOM对象，是一个原生JS对象</p>
+        <p>第二个参数是一个对象，接收来自指令后面的参数，包含多个属性，可输出看看，参考下面 blue</p>
+        <p>//bind函数在给元素绑定指令时触发，</p>
+        <p> // 这时元素还没渲染DOM页面，在内存中(只触发一次)</p>
+        <p>//inserted 函数在元素进入DOM时才会执行(触发一次)</p>
+        <p>//updated 当Vnode的时候会执行这个函数</p>
+        <p>//样式如果被绑定在元素身上，不管这个元素有没有插入DOM页面，都会有一个内联样式</p>
+        <p>//样式绑定可以在bind函数中，也可以在inserted函数中，但是JS行为要在inserted函数中，JS行为在加载DOM后才有效</p>
+    </div>
+
+    <h1 v-color="'blue'" v-fontsize="'40'">{{ msg }}</h1>
+    <input type="text" v-model="aa" @keyup.enter = "change" v-focus>
+    <button @click.prevent="change" >切换</button>
+
+    <script>
+        //自定义全局指令，也可定义私有指令，在下面由例子
+        //Vue.directive("指令名称",对象)，对象有多个函数，在特定的阶段执行相应的操作
+        // 对象的第一个参数永远是el ,表示被指令所指定的DOM对象，是一个原生JS对象
+        Vue.directive("focus",{
+           bind:function (el) { //bind函数在给元素绑定指令时触发，
+               // 这时元素还没渲染DOM页面，在内存中(只触发一次)
+               el.focus();  //获得焦点需要早元素加载DOM后才会看见，bind出发一次时还在内存，并只能触发所以看不见
+           },
+           inserted:function (el) {//inserted 函数在元素进入DOM时才会执行(只触发一次)
+               el.focus();
+               el.style.color = "red";
+           },
+           updated:function (el) {//updated 当Vnode的时候会执行这个函数
+
+           }
+        });
+        var vm = new Vue({
+            el:"#app",
+            data:{
+                msg:"优秀的中国人",
+                aa:"神奇的国度"
+            },
+            methods:{
+                change(){
+                   return this.msg = this.aa
+                }
+            },
+            directives:{ //定义私有指令
+                'color':{//普通定义，是一个对象，然后是各个函数，下面有缩写的方法
+                    bind:function (el,binding) {//binding是一个对象
+                        console.log(binding)
+                        el.style.color = binding.value
+                    }
+                },
+                'fontsize':function (el,size) { //缩写，这个function等同于把代码写入bind 和 updated函数中
+                    el.style.fontSize = parseInt(size.value) + "px";
+                }
+            }
+        })
+    </script>
+</div>
+</body>
+</html>

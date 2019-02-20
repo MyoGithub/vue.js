@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>过滤器的使用</title>
+    <script src="dist/vue.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h3>{{ msg | str("疯狂","优秀") | test }}</h3>
+    </div>
+
+    <div id="app2">
+        <h2>{{ msg | test | bad}}</h2>
+    </div>
+    <script>
+       // 全局过滤器的定义：Vue.filter(过滤器名称，function(){})
+       //过滤器中function 的第一个参数永远被定义死了，是管道符前面传过来的数据
+       //第二个参数是上面传下来的值，可以传递多个参数
+       //可以同时调用多个过滤器
+       Vue.filter("str",function (msg,aa,bb) {
+           return  msg + "123"+aa+bb
+       });
+        Vue.filter("test",function (data) {
+       //字符串的replace方法的第一个参数除了字符串还可以写正则表达式
+           return  data.replace(/单纯/g,"邪恶")
+        });
+        var vm = new Vue({
+            el:"#app",
+            data:{
+                msg:"我很单纯，经常单纯的问，谁是世界上最单纯的娃娃!"
+            }
+        })
+
+       //定义私有过滤器
+       //当私有过滤器和全局过滤器重名时，首先采用自己的（就近原则）
+       var vm = new Vue({
+           el:"#app2",
+           data:{
+               msg:"过滤器中function 的第一个参数永远被定义死了，是管道符前面传过来的数据"
+           },
+           filters:{
+               test:function (data) {
+                   return  data.replace(/第一/g,"邪恶")
+               },
+               bad:function (data) {
+                   return data+"hello";
+               }
+           }
+       })
+    </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义键盘修饰符</title>
+    <script src="js/vue.js"></script>
+    <script src="js/vue.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h4 @keyup.f2="change">{{ msg }}</h4>
+        <input type="text" v-model="ssa" @keyup.enter = "change">
+        <button @click.prevent="change" @keyup.enter = "change">切换</button>
+    </div>
+    <script>
+        //自定义全局键盘修饰符，Vue.config.keyCodes.按键名称 = 按键码， 就可以绑定一个
+        Vue.config.keyCodes.f2 = 113;
+
+        var vm = new Vue({
+           el:"#app",
+           data:{
+               msg:"中国人优秀",
+               stp:"日本人傻逼",
+               ssa:"22"
+           } ,
+            methods:{
+               change(){
+                   return this.msg = this.ssa = this.stp;
+               }
+            }
+        });
+    </script>
+</body>
+</html>

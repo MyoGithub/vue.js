@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>跑马灯效果</title>
+    <script src="dist/vue.min.js"></script>
+</head>
+<body>
+    <div id="app">
+       <button @click="lang">浪起来</button>
+       <button @click="wen">稳住</button>
+        <p>{{msg}}</p>
+    </div>
+<script>
+    var vm = new Vue({
+        el:"#app",
+        data:{
+            msg:"浪浪浪~~~~",
+            intervalId:null
+        },
+        methods:{
+
+            lang(){
+                if(this.intervalId != null) return;
+                this.intervalId = setInterval(lang=>{
+                    var start = this.msg.substring(0,1);
+                    var end = this.msg.substring(1);
+                    console.log(start,end)
+                    this.msg = end + start;
+                },400)
+            },
+            wen(){
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+            }
+
+        }
+    })
+</script>
+</body>
+</html>
